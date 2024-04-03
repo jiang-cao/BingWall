@@ -421,27 +421,36 @@ bool MainWindow::saveWall(const QString &path, QString imagePath) {
 
   p.setPen(QPen(QColor(255, 255, 255, 0)));
   QFont font = p.font();
-  font.setPixelSize(22);
+  font.setPixelSize(12);
   font.setBold(true);
   p.setFont(font);
   if (currentWallInfo.trimmed().isEmpty()) {
-    currentWallInfo = "BingWall";
+    currentWallInfo = "CJ";
   }
   QRect boundingRect;
+  int barWide = 180;
+  QString plainText = htmlToPlainText(currentWallInfo).split("\n").at(0);
   // draw fake text to calc bound rect
-  p.drawText(QRect(image.rect().x() - 20, image.rect().y() - 20,
+  p.drawText(QRect(image.rect().x() - barWide - 5, image.rect().y() - 5,
                    image.rect().width(), image.rect().height()),
              Qt::AlignBottom | Qt::AlignRight | Qt::TextWordWrap,
-             htmlToPlainText(currentWallInfo), &boundingRect);
+             plainText, &boundingRect);
+
+  // p.fillRect(QRectF(boundingRect.x() - 5, boundingRect.y() - 5,
+  //                   boundingRect.width() + 10, boundingRect.height() + 10),
+  //            QBrush(QColor(0, 0, 0, 125)));
+  p.fillRect(QRectF(image.rect().width() - barWide, image.rect().y(),
+                    barWide, image.rect().height()),
+             QBrush(QColor(0, 0, 0, 169)));
 
   p.fillRect(QRectF(boundingRect.x() - 5, boundingRect.y() - 5,
                     boundingRect.width() + 10, boundingRect.height() + 10),
-             QBrush(QColor(0, 0, 0, 125)));
-  p.setPen(QPen(QColor(255, 255, 255, 125)));
-  p.drawText(image.rect().x() - 20, image.rect().y() - 20, image.rect().width(),
+             QBrush(QColor(0, 0, 0, 169)));
+  p.setPen(QPen(QColor(255, 255, 255, 128)));
+  p.drawText(image.rect().x() - barWide - 5, image.rect().y() - 5, image.rect().width(),
              image.rect().height(),
              Qt::AlignBottom | Qt::AlignRight | Qt::TextWordWrap,
-             htmlToPlainText(currentWallInfo), &boundingRect);
+             plainText, &boundingRect);
   p.end();
   if (path.split("/").last().contains(".")) {
     return image.save(path);
